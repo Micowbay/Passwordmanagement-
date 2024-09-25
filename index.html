@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+        .login-box {
+            width: 75%;
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .extra-options {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .extra-options a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .extra-options a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            display: block;
+            margin-top: 5px;
+            color: red;
+            font-size: 14px;
+            position: relative;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        .captcha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .captcha img {
+            margin-left: 10px;
+        }
+        .captcha button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+        .captcha button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function refreshCaptcha() {
+            var captchaImage = document.getElementById('captcha-image');
+            captchaImage.src = 'captcha.php?' + Date.now();  // 防止瀏覽器快取
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box" style="margin-right: 10%;">
+            <h2>Login</h2>
+            <p>password management system</p>
+            <form action="login.php" method="post">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                
+                <div class="captcha">
+                    <input type="text" name="captcha" placeholder="Enter CAPTCHA" required>
+                    <img id="captcha-image" src="captcha.php" alt="CAPTCHA Image">
+                    <button type="button" onclick="refreshCaptcha()">Refresh CAPTCHA</button>
+                </div>
+                
+                <input type="submit" value="Login">
+            </form>
+            <div class="extra-options">
+                <a href="register.php">Create Account</a>
+                <a href="forgot_password.php">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
