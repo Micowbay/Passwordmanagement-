@@ -2,7 +2,7 @@
 session_start();
 // 設定倒數時間
 $_SESSION['logout_time'] = time() + 300; // 設置新的300秒倒數
-
+define('ENCRYPTION_KEY', 'c4674028985c2a1272812a551ff9dc131ba4ae6d503be70dea2686287daf133c');
 // 每次加載頁面時重新計算剩餘時間
 $timeLeft = $_SESSION['logout_time'] - time();
 if ($timeLeft <= 0) {
@@ -54,34 +54,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $account_name = $_POST['account'];
         $password_plaintext = $_POST['password'];
         $notes = $_POST['notes'] ?? null;
-        $created_at = $_POST['created_at'];  // 使用者選擇的創建日期
+        $created_at = $_POST['created_at'];
 
-        // Generate a 16-byte IV
-        $iv = openssl_random_pseudo_bytes(16);
+        // 檢查是否已存在相同的密碼
+        $sql_check = "SELECT encrypted_password FROM passwordmanage WHERE username = ?";
+        $check_stmt = sqlsrv_query($conn, $sql_check, array($username));
 
-        // Encrypt the password
-        $encrypted_password = openssl_encrypt($password_plaintext, 'aes-256-cbc', 'your-encryption-key', 0, $iv);
-
-        // Store the IV along with the encrypted password (concatenate them)
-        $encrypted_data = base64_encode($iv . $encrypted_password);
-
-        // Insert the password into the database with the selected date
-        $sql = "INSERT INTO passwordmanage (username, website_name, account_name, encrypted_password, notes, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $params = array($username, $website_name, $account_name, $encrypted_data, $notes, $created_at);
-        $stmt = sqlsrv_query($conn, $sql, $params);
-
-        if ($stmt === false) {
+        if ($check_stmt === false) {
             die(print_r(sqlsrv_errors(), true));
         }
-    } elseif (isset($_POST['delete_password'])) {
-        // Handle delete request
-        $id = $_POST['id'];
-        $sql = "DELETE FROM passwordmanage WHERE id = ? AND username = ?";
-        $params = array($id, $username);
-        $stmt = sqlsrv_query($conn, $sql, $params);
-        if ($stmt === false) {
-            die(print_r(sqlsrv_errors(), true));
+
+        $existing_passwords = [];
+
+        while ($row = sqlsrv_fetch_array($check_stmt, SQLSRV_FETCH_ASSOC)) {
+            $encrypted_data = base64_decode($row['encrypted_password']);
+
+            // 提取IV（前16位元組）和加密密碼
+            $iv = substr($encrypted_data, 0, 16);
+            $encrypted_password = substr($encrypted_data, 16);
+
+            // 解密密碼
+            $decrypted_password = openssl_decrypt($encrypted_password, 'aes-256-cbc', ENCRYPTION_KEY, 0, $iv);
+            $existing_passwords[] = $decrypted_password; // 保存解密後的密碼
+        }
+
+        // 檢查用戶輸入的密碼是否與已解密的密碼相同
+        if (in_array($password_plaintext, $existing_passwords)) {
+            $password_exists_message = "已經有其他網站使用此密碼";
+        } else {
+            // 如果密碼不重複，則插入新密碼
+            $sql = "INSERT INTO passwordmanage (username, website_name, account_name, encrypted_password, notes, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            $params = array($username, $website_name, $account_name, $encrypted_data, $notes, $created_at);
+            $stmt = sqlsrv_query($conn, $sql, $params);
+            if ($stmt === false) {
+                die(print_r(sqlsrv_errors(), true));
+            }
         }
     }
 }
@@ -106,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     $encrypted_password = substr($encrypted_data, 16);
 
     // 解密密碼
-    $decrypted_password = openssl_decrypt($encrypted_password, 'aes-256-cbc', 'your-encryption-key', 0, $iv);
+    $decrypted_password = openssl_decrypt($encrypted_password, 'aes-256-cbc', ENCRYPTION_KEY, 0, $iv);
 
     echo json_encode(["success" => true, "decrypted_password" => $decrypted_password]);
     exit();
@@ -157,7 +165,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $encrypted_password = substr($encrypted_data, 16);
 
     // Decrypt the password
-    $decrypted_password = openssl_decrypt($encrypted_password, 'aes-256-cbc', 'your-encryption-key', 0, $iv);
+    $decrypted_password = openssl_decrypt($encrypted_password, 'aes-256-cbc', ENCRYPTION_KEY, 0, $iv);
     $row['decrypted_password'] = $decrypted_password;
 
     // Check if the password is older than 60 days
@@ -248,7 +256,7 @@ sqlsrv_close($conn);
                             const response = JSON.parse(xhr.responseText);
                             if (response.success) {
                                 // 密碼正確，顯示實際密碼
-                                fetch('password_manager.php', {
+                                fetch('password_manager_copy.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -339,7 +347,7 @@ sqlsrv_close($conn);
 
     <div class="container">
         <h2>Password Manager</h2>
-        <form action="password_manager.php" method="post">
+        <form action="password_manager_copy.php" method="post">
             <input type="text" name="site" placeholder="Site" required>
             <input type="text" name="account" placeholder="Account" required>
             <input type="text" name="password" id="password" placeholder="Password" required>
@@ -350,7 +358,7 @@ sqlsrv_close($conn);
         </form>
 
         <!-- Filter Form -->
-        <form method="get" action="password_manager.php">
+        <form method="get" action="password_manager_copy.php">
             <h3>Filter Passwords</h3>
             <input type="text" name="site" placeholder="Site">
             <input type="text" name="account" placeholder="Account">
@@ -395,7 +403,7 @@ sqlsrv_close($conn);
                         </td>
 
                         <td>
-                            <form action="password_manager.php" method="post" style="display:inline;">
+                            <form action="password_manager_copy.php" method="post" style="display:inline;">
                                 <input type="hidden" name="id" value="<?php echo $entry['id']; ?>">
                                 <input type="submit" name="delete_password" value="Delete">
                             </form>

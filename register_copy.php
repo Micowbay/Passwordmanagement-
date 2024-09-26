@@ -87,40 +87,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        // 存儲用戶資料到 session，等待驗證
+        $_SESSION['registration_data'] = array(
+            'username' => $username,
+            'password' => $hashed_password,
+            'email' => $email,
+            'ID_number' => $ID_number,
+            'birthday' => $birthday
+        );
 
-        $sql = "INSERT INTO users (username, password, email, ID_number, birthday) VALUES (?, ?, ?, ?, ?)";
-        $params = array($username, $hashed_password, $email, $ID_number, $birthday);
-        $stmt = sqlsrv_query($conn, $sql, $params);
+        // Generate verification code
+        $verification_code = rand(100000, 999999);
+        $_SESSION['verification_code'] = $verification_code;
+        $_SESSION['username'] = $username; // 保存用戶名
+        $_SESSION['email'] = $email; // 保存用戶電子郵件
+        $_SESSION['registration_time'] = time(); // 記錄註冊時間
+        
+        // 發送郵件通知
+        $user_email = $email; // 使用註冊時填寫的電子郵件
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'aligadou49@gmail.com'; // 替換為你的 Gmail 郵箱
+            $mail->Password   = 'fwexbtvrfecsxrmh'; // 替換為你的應用程序密碼
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
 
-        if ($stmt) {
-            $registration_successful = true;
-                // 發送郵件通知
-            $user_email = $email; // 使用註冊時填寫的電子郵件
-            $mail = new PHPMailer(true);
-            try {
-                $mail->isSMTP();
-                $mail->Host       = 'smtp.gmail.com';
-                $mail->SMTPAuth   = true;
-                $mail->Username   = 'aligadou49@gmail.com'; // 替換為你的 Gmail 郵箱
-                $mail->Password   = 'fwexbtvrfecsxrmh'; // 替換為你的應用程序密碼
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = 587;
+            $mail->setFrom('aligadou49@gmail.com', 'Password Management System');
+            $mail->addAddress($user_email);
 
-                $mail->setFrom('aligadou49@gmail.com', 'Password Management System');
-                $mail->addAddress($user_email);
+            $mail->isHTML(true);
+            $mail->Subject = 'Verification Code';
+            $mail->Body    = "Your verification code is: $verification_code";
 
-                $mail->isHTML(true);
-                $mail->Subject = 'Login Notification';
-                $mail->Body    = "You have successfully registered in the Password Management System.";
-                $mail->AltBody = "You have successfully registered in the Password Management System.";
-
-                $mail->send();
-                echo "Registration notification email sent.";
-            } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-            }
-        } else {
-            echo "Error: " . print_r(sqlsrv_errors(), true);
+            $mail->send();
+            header("Location: verify_register.php"); // 跳轉到驗證碼輸入頁面
+            exit();
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     }
 }
@@ -142,6 +149,7 @@ sqlsrv_close($conn);
             justify-content: space-between;
             width: 800px; /* 根據需要設置寬度 */
             margin: auto; /* 居中容器 */
+            background-color: #f9f9f9
         }
         .top_title{
             text-align: center; /* 文字置中 */
@@ -155,7 +163,7 @@ sqlsrv_close($conn);
         .form-group {
             display: flex;
             align-items: center;
-            margin-bottom: 30px; /* 在表單組之間添加一些空間 */
+            margin-bottom: 50px; /* 在表單組之間添加一些空間 */
         }
 
         .hints {
@@ -189,6 +197,10 @@ sqlsrv_close($conn);
             width: 800px; /* 根據需要設置寬度 */
             margin: 20px auto; /* 垂直間距和水平置中 */
             text-align: center; /* 文字置中 */
+        }
+        .hints{
+            display: block; /* 使每個提示在新的一行顯示 */
+            margin-top: 5px
         }
 
         .hint-box p {
@@ -246,43 +258,19 @@ sqlsrv_close($conn);
             const upperCaseHint = document.getElementById("uppercase-hint");
             const lowerCaseHint = document.getElementById("lowercase-hint");
             const numberHint = document.getElementById("password-number-hint");
+            const specialCharHint = document.getElementById("special-char-hint");
 
             const hasLength = password.length >= 7;
             const hasUpperCase = /[A-Z]/.test(password);
             const hasLowerCase = /[a-z]/.test(password);
             const hasNumber = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-            if (hasLength) {
-                lengthHint.classList.remove("invalid");
-                lengthHint.classList.add("valid");
-            } else {
-                lengthHint.classList.remove("valid");
-                lengthHint.classList.add("invalid");
-            }
-
-            if (hasUpperCase) {
-                upperCaseHint.classList.remove("invalid");
-                upperCaseHint.classList.add("valid");
-            } else {
-                upperCaseHint.classList.remove("valid");
-                upperCaseHint.classList.add("invalid");
-            }
-
-            if (hasLowerCase) {
-                lowerCaseHint.classList.remove("invalid");
-                lowerCaseHint.classList.add("valid");
-            } else {
-                lowerCaseHint.classList.remove("valid");
-                lowerCaseHint.classList.add("invalid");
-            }
-
-            if (hasNumber) {
-                numberHint.classList.remove("invalid");
-                numberHint.classList.add("valid");
-            } else {
-                numberHint.classList.remove("valid");
-                numberHint.classList.add("invalid");
-            }
+            lengthHint.className = hasLength ? "valid" : "invalid";
+            upperCaseHint.className = hasUpperCase ? "valid" : "invalid";
+            lowerCaseHint.className = hasLowerCase ? "valid" : "invalid";
+            numberHint.className = hasNumber ? "valid" : "invalid";
+            specialCharHint.className = hasSpecialChar ? "valid" : "invalid";
         }
 
         function validateConfirmPassword() {
@@ -383,6 +371,7 @@ sqlsrv_close($conn);
                         <span id="uppercase-hint" class="hint invalid">沒有大寫</span>
                         <span id="lowercase-hint" class="hint invalid">沒有小寫</span>
                         <span id="password-number-hint" class="hint invalid">沒有數字</span>
+                        <span id="special-char-hint" class="hint invalid">至少一個特殊符號</span>
                     </div>
                 </div>
 
@@ -391,7 +380,7 @@ sqlsrv_close($conn);
                     <input type="password" id="confirm_password" name="confirm_password" oninput="validateConfirmPassword()" required>
                     <span id="password-match-hint" class="hint invalid" style="margin-left:10px; display:none;">不同於第一次輸入</span>
                 </div>
-                <input type="submit" value="Register">
+                <input type="submit" value="註冊">
             </div>
 
             <div class="right-column">
