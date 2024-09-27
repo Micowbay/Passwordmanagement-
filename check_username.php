@@ -14,11 +14,15 @@ if ($conn === false) {
 }
 
 if (isset($_POST['username'])) {
-    $username = $_POST['username'];
-    $check_sql = "SELECT * FROM users WHERE username = ?";
-    $check_stmt = sqlsrv_query($conn, $check_sql, array($username));
+    $user_username = $_POST['username'];
+    $check_sql = "SELECT * FROM users_test WHERE username = ?";
+    $check_stmt = sqlsrv_query($conn, $check_sql, array($user_username));
 
-    if ($check_stmt && sqlsrv_has_rows($check_stmt)) {
+    if ($check_stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    if (sqlsrv_fetch_array($check_stmt, SQLSRV_FETCH_ASSOC)) {
         echo "taken";
     } else {
         echo "available";

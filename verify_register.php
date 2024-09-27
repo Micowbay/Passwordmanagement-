@@ -25,7 +25,7 @@ if (time() - $_SESSION['registration_time'] > 120) {
     $username = $_SESSION['username'];
     
     // 使用正確的 SQL 語句刪除用戶
-    $delete_sql = "DELETE FROM users WHERE username = ?";
+    $delete_sql = "DELETE FROM users_test WHERE username = ?";
     $delete_stmt = sqlsrv_query($conn, $delete_sql, array($username));
 
     if ($delete_stmt) {
@@ -62,13 +62,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 插入用戶資料
         $registration_data = $_SESSION['registration_data'];
-        $sql = "INSERT INTO users (username, password, email, ID_number, birthday) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users_test (username, B, C,email, ID_number, birthday) VALUES (?, ?, ?, ?, ?,?)";
         $params = array(
             $registration_data['username'],
-            $registration_data['password'],
+            $registration_data['B'],
+            $registration_data['C'],
             $registration_data['email'],
             $registration_data['ID_number'],
-            $registration_data['birthday']
+            $registration_data['birthday'],
         );
 
         $stmt = sqlsrv_query($conn, $sql, $params);

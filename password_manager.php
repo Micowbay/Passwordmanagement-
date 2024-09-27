@@ -324,6 +324,16 @@ sqlsrv_close($conn);
         font-weight: bold;
     }
 
+    table th {
+    padding: 10px; /* 增加内边距 */
+    text-align: left; /* 可以根据需要调整对齐方式 */
+    }
+    
+    table {
+    border-spacing: 10px; /* 增加单元格之间的间距 */
+    }
+
+
     </style>
 
 </head>
@@ -338,23 +348,24 @@ sqlsrv_close($conn);
 
 
     <div class="container">
-        <h2>Password Manager</h2>
+        <h2>密碼好幫手</h2>
         <form action="password_manager.php" method="post">
-            <input type="text" name="site" placeholder="Site" required>
-            <input type="text" name="account" placeholder="Account" required>
-            <input type="text" name="password" id="password" placeholder="Password" required>
+            <h3>儲存密碼</h3>
+            <input type="text" name="site" placeholder="網站或應用程式" required>
+            <input type="text" name="account" placeholder="帳號" required>
+            <input type="text" name="password" id="password" placeholder="密碼" required>
             <button type="button" onclick="generatePassword()">自動產生</button>
             <input type="date" name="created_at" required>
-            <input type="text" name="notes" placeholder="Notes (optional)">
-            <input type="submit" name="add_password" value="Add Password">
+            <input type="text" name="notes" placeholder="備註 (非必填)">
+            <input type="submit" name="add_password" value="加入清單">
         </form>
 
         <!-- Filter Form -->
         <form method="get" action="password_manager.php">
-            <h3>Filter Passwords</h3>
-            <input type="text" name="site" placeholder="Site">
-            <input type="text" name="account" placeholder="Account">
-            <input type="text" name="notes" placeholder="Notes">
+            <h3>搜尋網站密碼</h3>
+            <input type="text" name="site" placeholder="網站或應用程式">
+            <input type="text" name="account" placeholder="帳號">
+            <input type="text" name="notes" placeholder="備註">
             <input type="date" name="created_at">
             <label>
                 <input type="checkbox" name="alert" value="1"> 需要更換密碼
@@ -362,17 +373,17 @@ sqlsrv_close($conn);
             <input type="submit" value="Filter">
         </form>
 
-        <h3>Stored Passwords</h3>
+        <h3>帳號密碼清單</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Site</th>
-                    <th>Account</th>
-                    <th>Password</th>
-                    <th>Notes</th>
-                    <th>Created At</th>
-                    <th>Alert</th>
-                    <th>Action</th>
+                    <th>網站或應用程式</th>
+                    <th>帳號</th>
+                    <th>密碼</th>
+                    <th>備註</th>
+                    <th>設立時間</th>
+                    <th>提醒</th>
+                    <th>動作</th>
                 </tr>
             </thead>
             <tbody>

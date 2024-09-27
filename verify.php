@@ -131,8 +131,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body onload="startCountdown(<?php echo $_SESSION['code_expiry']; ?>)">
 
     <div class="container">
-        <h2>Two-Factor Authentication</h2>
-        <p>Please enter the verification code sent to your email.</p>
+        <h2>雙因子驗證</h2>
+        <p>請輸入寄至您信箱的驗證碼</p>
         <!--<p>Your verification code is: <strong><?php echo $_SESSION['verification_code'] ?? 'N/A'; ?></strong></p>-->
         <p id="countdown"></p> <!-- 剩余时间显示在这里 -->
         <form action="verify.php" method="post">

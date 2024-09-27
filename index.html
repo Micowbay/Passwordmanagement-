@@ -82,16 +82,18 @@
             margin-left: 10px;
         }
         .captcha button {
+            writing-mode: horizontal-tb;
+            text-align: center;
             margin-left: 10px;
-            padding: 5px 10px;
+            padding: 1px 5px;
             cursor: pointer;
-            background-color: #007bff;
+            background-color: #ff4000;
             color: #fff;
             border: none;
             border-radius: 5px;
         }
         .captcha button:hover {
-            background-color: #0056b3;
+            background-color: #ff4000;
         }
     </style>
     <script>
@@ -104,23 +106,23 @@
 <body>
     <div class="container">
         <div class="login-box" style="margin-right: 10%;">
-            <h2>Login</h2>
-            <p>password management system</p>
+            <h2>密碼管理系統</h2>
+            <p>登入</p>
             <form action="login.php" method="post">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="text" name="username" placeholder="使用者名稱" required>
+                <input type="password" name="password" placeholder="密碼" required>
                 
                 <div class="captcha">
-                    <input type="text" name="captcha" placeholder="Enter CAPTCHA" required>
+                    <input type="text" name="captcha" placeholder="驗證碼" required>
                     <img id="captcha-image" src="captcha.php" alt="CAPTCHA Image">
-                    <button type="button" onclick="refreshCaptcha()">Refresh CAPTCHA</button>
+                    <button type="button" onclick="refreshCaptcha()">換一個</button>
                 </div>
                 
-                <input type="submit" value="Login">
+                <input type="submit" value="登入">
             </form>
             <div class="extra-options">
-                <a href="register_copy.php">Create Account</a>
-                <a href="forgot_password.php">Forgot Password?</a>
+                <a href="register.php">創建帳號</a>
+                <a href="forgot_password.php">忘記密碼?</a>
             </div>
         </div>
     </div>
