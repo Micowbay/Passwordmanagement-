@@ -186,106 +186,140 @@ sqlsrv_close($conn);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
 
         .container {
-            display: flex;
-            justify-content: space-between;
-            width: 800px; /* 根據需要設置寬度 */
-            margin: auto; /* 居中容器 */
-            background-color: #f9f9f9
+            max-width: 760px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        .top_title{
-            text-align: center; /* 文字置中 */
-            margin-bottom: 20px;
-        }
-        .left-column,
-        .right-column {
-            width: 70%; /* 根據需要調整寬度 */
+
+        .top_title h2 {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
         }
 
         .form-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 50px; /* 在表單組之間添加一些空間 */
+            margin-bottom: 25px;
         }
 
-        .hints {
-            margin-left: 10px;
-            display: inline-block;
-        }
-
-        .invalid {
-            color: red;
-        }
-
-        .valid {
-            color: green;
-        }
-
-        .hint {
+        .form-group label {
             display: block;
-            margin-top: 5px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
         }
 
-        .success {
-            display: none;
-            color: green;
-            font-size: 18px;
-        }
-
-        .hint-box {
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        input[type="submit"],
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
             border: 1px solid #ccc;
-            padding: 15px;
-            background-color: #f9f9f9;
-            width: 800px; /* 根據需要設置寬度 */
-            margin: 20px auto; /* 垂直間距和水平置中 */
-            text-align: center; /* 文字置中 */
-        }
-        .hints{
-            display: block; /* 使每個提示在新的一行顯示 */
-            margin-top: 5px
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
-        .hint-box p {
-            margin: 0;
-        }
-
-        .return-link {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #28a745; /* 綠色背景 */
-            color: white; /* 字體顏色 */
-            text-decoration: none; /* 移除連結下劃線 */
-            border-radius: 5px; /* 圓角 */
-            border: 2px solid #28a745; /* 邊框為綠色 */
-        }
-
-        .return-link:hover {
-            background-color: white; /* 滑鼠懸停時背景變為白色 */
-            color: #28a745; /* 滑鼠懸停時字體變為綠色 */
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
         }
 
         input[type="submit"] {
-            padding: 10px 20px; /* 增加内边距 */
-            font-size: 16px; /* 增加字体大小 */
-            background-color: black; /* 可以设置背景色 */
-            color: #FFFFFF; /* 字体颜色 */
-            border: 2px solid black; /*邊框為黑色 */
-            border-radius: 5px; /* 圆角 */
-            cursor: pointer; /* 鼠标悬停显示为手形 */
-        }
-        input[type="submit"]:hover {
-            background-color: #e63900; /* 鼠标悬停时颜色变化 */
+            background-color: #007bff;
+            color: #fff;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
         }
 
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .return-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .return-link:hover {
+            background-color: white;
+            color: #007bff;
+        }
+
+        .hint-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: #555;
+        }
+
+        .hints {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .valid {
+            color: #28a745;
+        }
+
+        .invalid {
+            color: #dc3545;
+        }
+
+        #success-alert {
+            display: none;
+            color: #28a745;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
     </style>
     <script>
         function validateUsername() {
@@ -393,89 +427,82 @@ sqlsrv_close($conn);
         document.getElementById("username").addEventListener("input", checkUsernameAvailability);
     </script>
 </head>
+
 <body>
 
-<div id="success-alert" class="success">
-    <h2>Registration Successful!</h2>
-    <p>Your account has been created successfully. <a href="index.html">Return to Login</a></p>
-</div>
-
-<a href="index.html" class="return-link">返回首頁</a>
-
-<?php if (!$registration_successful): ?>
-    <div class="top_title">
-        <h2>註冊系統</h2>
-    </div>
-    <div class="hint-box">
-        <p>使用者名稱必須至少包含一個字母和一個數字。</p>
-        <p>密碼長度必須至少為 7 個字符，同時包含大小寫字母和至少 1 個數字和 1 個特殊符號</p>
+    <div id="success-alert" class="success">
+        <h2>Registration Successful!</h2>
+        <p>Your account has been created successfully. <a href="index.html">Return to Login</a></p>
     </div>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        <div class="container">
-            <div class="left-column">
-                <div class="form-group">
-                    <label for="username">使用者名稱:</label>
-                    <input type="text" id="username" name="username" oninput="validateUsername(); checkUsernameAvailability()" required>
-                    <div class="hints">
-                        <span id="letter-hint" class="hint invalid">至少一個字元</span>
-                        <span id="number-hint" class="hint invalid">至少一個數字</span>
-                        <span id="username-hint" class="hint"></span> <!-- 用于显示用户名的可用性 -->
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">密碼:</label>
-                    <input type="password" id="password" name="password" oninput="validatePassword()" required>
-                    <div class="hints">
-                        <span id="length-hint" class="hint invalid">至少七個字</span>
-                        <span id="uppercase-hint" class="hint invalid">沒有大寫</span>
-                        <span id="lowercase-hint" class="hint invalid">沒有小寫</span>
-                        <span id="password-number-hint" class="hint invalid">沒有數字</span>
-                        <span id="special-char-hint" class="hint invalid">至少一個特殊符號</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirm_password">確認密碼:</label>
-                    <input type="password" id="confirm_password" name="confirm_password" oninput="validateConfirmPassword()" required>
-                    <span id="password-match-hint" class="hint invalid" style="margin-left:10px; display:none;">不同於第一次輸入</span>
-                </div>
-                <input type="submit" value="註冊">
-            </div>
-
-            <div class="right-column">
-                <div class="form-group">
-                    <label for="email">電子郵件:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="ID_number">身分證字號:</label>
-                    <input type="text" id="ID_number" name="ID_number" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="birthday">生日:</label>
-                    <input type="date" id="birthday" name="birthday" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="captcha">驗證碼：</label>
-                    <img id="captcha-image" src="captcha.php" alt="CAPTCHA Image"><br>
-                    <input type="text" id="captcha" name="captcha" required style="margin-top: 10px; margin-bottom: 10px;"><br>
-                    <button type="button" onclick="refreshCaptcha()" style="display: block; margin-top: 5px;">刷新驗證碼</button>
-                </div>
-
-                <div class="form-group">
-                    <label for="captcha">臉部擷取：</label>
-                    <button type="button" onclick="" style="display: block; margin-top: 5px;">拍照</button>
-                </div>
-            </div>
+    <div class="container">
+        <div class="top_title">
+            <h2>註冊系統</h2>
         </div>
-        
-    </form>
-<?php endif; ?>
 
+        <div class="hint-box">
+            <p>使用者名稱必須至少包含一個字母和一個數字。</p>
+            <p>密碼長度必須至少為 7 個字符，同時包含大小寫字母和至少 1 個數字和 1 個特殊符號。</p>
+        </div>
+
+        <form method="post" action="#">
+            <div class="form-group">
+            <label for="username">使用者名稱:</label>
+                <input type="text" id="username" name="username" oninput="validateUsername(); checkUsernameAvailability()" required>
+                <div class="hints">
+                    <span id="letter-hint" class="hint invalid">至少一個字元</span>
+                    <span id="number-hint" class="hint invalid">至少一個數字</span>
+                    <span id="username-hint" class="hint"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">密碼:</label>
+                <input type="password" id="password" name="password" oninput="validatePassword()" required>
+                <div class="hints">
+                    <span id="length-hint" class="hint invalid">至少七個字</span>
+                    <span id="uppercase-hint" class="hint invalid">沒有大寫</span>
+                    <span id="lowercase-hint" class="hint invalid">沒有小寫</span>
+                    <span id="password-number-hint" class="hint invalid">沒有數字</span>
+                    <span id="special-char-hint" class="hint invalid">至少一個特殊符號</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">確認密碼:</label>
+                <input type="password" id="confirm_password" name="confirm_password" oninput="validateConfirmPassword()" required>
+                <span id="password-match-hint" class="hint invalid" style="display:none;">不同於第一次輸入</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">電子郵件:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="ID_number">身分證字號:</label>
+                <input type="text" id="ID_number" name="ID_number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="birthday">生日:</label>
+                <input type="date" id="birthday" name="birthday" required>
+            </div>
+
+            <div class="form-group">
+                <label for="captcha">驗證碼：</label>
+                <img id="captcha-image" src="captcha.php" alt="CAPTCHA">
+                <button id="reload-captcha" onclick="reloadCaptcha()">重置驗證碼</button>
+                <input type="text" id="captcha" name="captcha" required>
+            </div>
+
+            <input type="submit" value="註冊">
+        </form>
+
+        <a href="index.html" class="return-link">返回首頁</a>
+    </div>
+
+    <script src="form-validation.js"></script>
 </body>
+
 </html>

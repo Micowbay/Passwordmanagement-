@@ -288,93 +288,221 @@ sqlsrv_close($conn);
 
 
     </script>
-
-
-
-
     <style>
-    #logout-message {
-        position: fixed;
-        top: 10px;
-        right: 100px;
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-family: Arial, sans-serif;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
 
-    #logout {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        background-color: #f44336;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-family: Arial, sans-serif;
-    }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
 
-    #logout a {
-        color: white;
-        text-decoration: none;
-    }
+        .container {
+            width: 85%;
+            max-width: 1000px;
+            margin: 100px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    #logout:hover {
-        background-color: #d32f2f;
-    }
+        h2,
+        h3 {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
 
-    #timer {
-        font-weight: bold;
-    }
+        form {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
 
-    table th {
-    padding: 10px; /* 增加内边距 */
-    text-align: left; /* 可以根据需要调整对齐方式 */
-    }
-    
-    table {
-    border-spacing: 10px; /* 增加单元格之间的间距 */
-    }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
 
+        form input[type="text"],
+        form input[type="date"],
+        form input[type="password"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #ffffff;
+            color: #000;
+            transition: border 0.3s;
+            margin-right: 10px;
+        }
 
+        form input[type="text"]:focus,
+        form input[type="date"]:focus,
+        form input[type="password"]:focus {
+            border: 1px solid #80bdff;
+            outline: none;
+        }
+
+        .generate-button-container {
+            display: flex;
+            align-items: center;
+        }
+
+        form button,
+        form input[type="submit"] {
+            padding: 10px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            width: 150px;
+            margin-left: 10px;
+        }
+
+        form button:hover,
+        form input[type="submit"]:hover {
+            background-color: #5a6268;
+        }
+
+        form input[type="checkbox"],
+        form label {
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ced4da;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .toggle-button {
+            background-color: #007bff;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+            width: 100px;
+        }
+
+        .toggle-button:hover {
+            background-color: #0056b3;
+        }
+
+        #logout-message,
+        #logout {
+            position: fixed;
+            top: 10px;
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        #logout-message {
+            right: 120px;
+        }
+
+        #logout {
+            right: 20px;
+            background-color: #dc3545;
+        }
+
+        #logout a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #logout:hover {
+            background-color: #c82333;
+        }
+
+        #timer {
+            font-weight: bold;
+            margin-right: 5px;
+        }
     </style>
-
 </head>
+
 <body>
     <div id="logout-message">
         <span id="timer">300</span> 秒後自動登出
     </div>
-    
+
     <div id="logout">
         <a href="?action=logout">登出</a>
     </div>
 
-
     <div class="container">
         <h2>密碼好幫手</h2>
+
         <form action="password_manager.php" method="post">
             <h3>儲存密碼</h3>
-            <input type="text" name="site" placeholder="網站或應用程式" required>
-            <input type="text" name="account" placeholder="帳號" required>
-            <input type="text" name="password" id="password" placeholder="密碼" required>
-            <button type="button" onclick="generatePassword()">自動產生</button>
-            <input type="date" name="created_at" required>
-            <input type="text" name="notes" placeholder="備註 (非必填)">
+            <div class="form-row">
+                <input type="text" name="site" placeholder="網站或應用程式" required>
+                <input type="text" name="account" placeholder="帳號" required>
+                <div class="generate-button-container">
+                    <input type="text" name="password" id="password" placeholder="密碼" required>
+                    <button type="button" onclick="generatePassword()">自動產生</button>
+                </div>
+            </div>
+            <div class="form-row">
+                <input type="date" name="created_at" required>
+                <input type="text" name="notes" placeholder="備註 (選填)">
+            </div>
             <input type="submit" name="add_password" value="加入清單">
         </form>
 
         <!-- Filter Form -->
         <form method="get" action="password_manager.php">
             <h3>搜尋網站密碼</h3>
-            <input type="text" name="site" placeholder="網站或應用程式">
-            <input type="text" name="account" placeholder="帳號">
-            <input type="text" name="notes" placeholder="備註">
-            <input type="date" name="created_at">
-            <label>
-                <input type="checkbox" name="alert" value="1"> 需要更換密碼
-            </label>
-            <input type="submit" value="搜尋">
+            <div class="form-row">
+                <input type="text" name="site" placeholder="網站或應用程式">
+                <input type="text" name="account" placeholder="帳號">
+                <input type="text" name="notes" placeholder="備註">
+            </div>
+            <div class="form-row">
+                <input type="date" name="created_at">
+                <label>
+                    <input type="checkbox" name="alert" value="1"> 需要更換密碼
+                </label>
+                <input type="submit" value="搜尋">
+            </div>
         </form>
 
         <h3>帳號密碼清單</h3>
@@ -389,9 +517,10 @@ sqlsrv_close($conn);
                     <th>提醒</th>
                     <th>動作</th>
                 </tr>
+                </tr>
             </thead>
             <tbody>
-                <?php foreach ($passwords as $entry): ?>
+            <?php foreach ($passwords as $entry): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($entry['website_name']); ?></td>
                         <td><?php echo htmlspecialchars($entry['account_name']); ?></td>
