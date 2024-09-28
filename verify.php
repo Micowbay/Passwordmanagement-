@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     clearInterval(interval);
                     countdownElement.innerHTML = "Code expired.";
                 } else {
-                    countdownElement.innerHTML = "Time remaining: " + remainingTime + " seconds";
+                    countdownElement.innerHTML = "剩餘時間: " + remainingTime + " 秒";
                 }
             }, 1000);
         }
@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!--<p>Your verification code is: <strong><?php echo $_SESSION['verification_code'] ?? 'N/A'; ?></strong></p>-->
         <p id="countdown"></p> <!-- 剩余时间显示在这里 -->
         <form action="verify.php" method="post">
-            <input type="text" name="verification_code" placeholder="Verification Code" required>
+            <input type="text" name="verification_code" placeholder="驗證碼" required>
             <input type="submit" value="Verify">
         </form>
     </div>

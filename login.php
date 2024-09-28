@@ -86,13 +86,14 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['capt
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port       = 587;
 
-                    $mail->setFrom('aligadou49@gmail.com', 'Password Management System');
+                    $mail->setFrom('aligadou49@gmail.com', '密碼好幫手','UTF-8');
                     $mail->addAddress($user_email, $user_username);
 
                     $mail->isHTML(true);
-                    $mail->Subject = 'Your Verification Code';
-                    $mail->Body    = "Your verification code is <b>$verification_code</b>";
-                    $mail->AltBody = "Your verification code is $verification_code";
+                    $mail->CharSet = 'UTF-8'; 
+                    $mail->Subject = '您的驗證碼';  // 使用中文主題
+                    $mail->Body    = "您的驗證碼是 <b>$verification_code</b>";  // 使用中文內容
+                    $mail->AltBody = "您的驗證碼是 $verification_code";
 
                     $mail->send();
                     echo 'Verification code has been sent to your email.';
