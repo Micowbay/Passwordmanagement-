@@ -23,8 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 連接到資料庫
         $connectionInfo = array(
             "Database" => $dbname,
-            "UID" => $db_username,
-            "PWD" => $db_password
+            "UID" => $username,
+            "PWD" => $password
         );
         $conn = sqlsrv_connect($servername, $connectionInfo);
 
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // 檢查用戶是否存在
-        $query = "SELECT username, email FROM users WHERE email = ? AND id_number = ? AND birthday = ?";
+        $query = "SELECT username, email FROM users_test WHERE email = ? AND ID_number = ? AND birthday = ?";
         $params = array($email, $id_number, $birthday);
         $stmt = sqlsrv_query($conn, $query, $params);
 
