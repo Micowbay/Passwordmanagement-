@@ -164,12 +164,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            $mail->setFrom('aligadou49@gmail.com', 'Password Management System');
+            $mail->setFrom('aligadou49@gmail.com', '密碼好幫手', 'UTF-8');
             $mail->addAddress($user_email);
 
             $mail->isHTML(true);
-            $mail->Subject = 'Verification Code';
-            $mail->Body    = "Your verification code is: $verification_code";
+            $mail->CharSet = 'UTF-8';  // 確保使用 UTF-8 編碼
+            $mail->Subject = '您的驗證碼';  // 使用中文主題
+            $mail->Subject = '您的驗證碼';
+            $mail->Body    = "您的驗證碼是: $verification_code";
 
             $mail->send();
             header("Location: verify_register.php"); // 跳轉到驗證碼輸入頁面
