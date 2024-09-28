@@ -35,7 +35,11 @@ $connectionOptions = array(
     "Uid" => "sa",
     "PWD" => "jim93329"
 );
-
+$searchPerformed = false;
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['site'])) {
+    $searchPerformed = true;  // 設置變數為 true，表示已進行搜尋
+    // Apply filters and fetch results...
+}
 // Establishes the connection
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
@@ -343,7 +347,7 @@ sqlsrv_close($conn);
     </div>
     
     <div id="logout">
-        <a href="?action=logout">Log Out</a>
+        <a href="?action=logout">登出</a>
     </div>
 
 
@@ -370,7 +374,7 @@ sqlsrv_close($conn);
             <label>
                 <input type="checkbox" name="alert" value="1"> 需要更換密碼
             </label>
-            <input type="submit" value="Filter">
+            <input type="submit" value="搜尋">
         </form>
 
         <h3>帳號密碼清單</h3>
@@ -408,7 +412,7 @@ sqlsrv_close($conn);
                         <td>
                             <form action="password_manager.php" method="post" style="display:inline;">
                                 <input type="hidden" name="id" value="<?php echo $entry['id']; ?>">
-                                <input type="submit" name="delete_password" value="Delete">
+                                <input type="submit" name="delete_password" value="刪除">
                             </form>
                         </td>
                     </tr>
@@ -416,6 +420,11 @@ sqlsrv_close($conn);
             </tbody>
 
         </table>
+        <?php if ($searchPerformed): ?>
+        <form method="post" action="password_manager.php">
+        <input type="submit" value="返回全部密碼">
+        </form>
+        <?php endif; ?>
     </div>
 </body>
 </html>

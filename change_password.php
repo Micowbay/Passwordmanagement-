@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 使用 JavaScript 顯示彈窗並跳轉
     echo "<script>
         alert('請記得新密碼喔!');
-        window.location.href = 'index.html';
+        window.location.href = 'password_manager.php';
     </script>";
     exit();
 }
@@ -93,6 +93,48 @@ sqlsrv_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>更換密碼</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 置中對齊 */
+            justify-content: center; /* 垂直置中 */
+            height: 100vh; /* 填滿整個視窗高度 */
+            margin: 0; /* 去掉預設的邊距 */
+            font-family: Arial, sans-serif; /* 字體設置 */
+        }
+
+        h2 {
+            margin-bottom: 20px; /* 標題與下方內容的間距 */
+        }
+
+        form {
+            text-align: center; /* 表單內容置中 */
+            margin: 0 auto; /* 表單自動邊距 */
+            padding: 20px; /* 表單內部邊距 */
+            border: 1px solid #ccc; /* 表單邊框 */
+            border-radius: 10px; /* 表單圓角 */
+            background-color: #f9f9f9; /* 表單背景顏色 */
+        }
+
+        label, p {
+            margin-bottom: 15px; /* 標籤與段落的間距 */
+        }
+
+        input[type="password"], input[type="submit"] {
+            margin-bottom: 15px; /* 輸入框和按鈕的間距 */
+            padding: 10px; /* 輸入框內部邊距 */
+            width: 100%; /* 輸入框寬度 */
+            max-width: 300px; /* 最大寬度 */
+            border: 1px solid #ccc; /* 輸入框邊框 */
+            border-radius: 5px; /* 輸入框圓角 */
+        }
+
+        #error-message {
+            color: red; 
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h2>更換密碼</h2>
