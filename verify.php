@@ -137,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p id="countdown"></p> <!-- 剩余时间显示在这里 -->
         <form action="verify.php" method="post">
             <input type="text" name="verification_code" placeholder="驗證碼" required>
-            <input type="submit" value="Verify">
+            <input type="submit" value="驗證">
         </form>
     </div>
 </body>
